@@ -1,15 +1,18 @@
 import express from 'express';
-import { singUpController } from './../controllers/authController.js'
-import { signupSchema, loginSchema } from "../validations/validatorSchema.js";
+import { registerController, loginController, logoutController } from './../controllers/authController.js'
+import { registerSchema, loginSchema } from "../validations/validatorSchema.js";
 import { validate } from './../middleware/validatorMiddleware.js'
 
+import { authMiddleware } from './../middleware/authMiddleware.js';
 
 const router = express.Router();
 
 
 
+router.get('/register', validate(registerSchema), registerController);
+router.get('/login', validate(loginSchema), loginController);
 
-router.get('/signup', validate(signupSchema), singUpController);
+router.get('/logout', authMiddleware, logoutController);
 
 
 

@@ -1,5 +1,6 @@
-const { createHmac } = require('crypto');
-const { hash, compare } = require('bcryptjs');
+import { createHmac } from 'crypto';
+import { hash, compare } from 'bcryptjs';
+
 
 // hash for passwoard:
 export const doHash = (value)=>{

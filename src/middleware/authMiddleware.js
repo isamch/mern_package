@@ -1,13 +1,16 @@
+import { json } from "express";
 import { verifyToken } from "../utils/jwt.js";
 
 export const authMiddleware = (req, res, next) => {
 
   let token;
-  if (req.headers.client === 'not-browser') {
+
+  if (req.headers.client === "not-browser" && req.headers.authorization) {
     token = req.headers.authorization;
-  } else {
-    token = req.cookies['Authorization'];
+  } else if (req.cookies?.Authorization) {
+    token = req.cookies.Authorization;
   }
+
 
   if (!token) {
     throw { message: "Unauthorized: Token not found", statusCode: 403 };
@@ -17,7 +20,7 @@ export const authMiddleware = (req, res, next) => {
     token = token.split(' ')[1];
   }
 
-  const jwtVerified = verifyToken(userToken);
+  const jwtVerified = verifyToken(token);
 
   if (!jwtVerified) {
     throw { message: "Invalid or expired token", statusCode: 401 };

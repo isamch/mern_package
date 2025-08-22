@@ -10,20 +10,25 @@ import connectDB from './src/config/db.js';
 // import middlewares:
 import errorHandler from './src/middleware/errorHandler.js';
 
+import cookieParser from "cookie-parser";
+
+
 
 
 const app = express(); // create instance app from express function factory
 
 // middleware: parse JSON
 app.use(express.json());
+// cookies parser
+app.use(cookieParser());
 
 
-// connectDB();
-
+// connect db
+await connectDB();
 
 // router :
-app.use('/', router);
-app.use('/', authRouter);
+app.use('/api/test', router);
+app.use('/api/auth', authRouter);
 
 
 // finales middlewares:
