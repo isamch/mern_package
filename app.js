@@ -7,7 +7,11 @@ import errorHandler from './src/middleware/errorHandler.js';
 
 const app = express(); // create instance app from express function factory
 
-connectDB();
+// middleware: parse JSON
+app.use(express.json());
+
+
+// connectDB();
 
 
 
