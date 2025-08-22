@@ -17,9 +17,12 @@ export const apiResponse = (res, status = "success", message = "", data = null, 
 
 
 export const errorResponse = (res, error = null, message = null, statusCode = 500) => {
+
   return res.status(statusCode).json({
     status: "error",
     message: message || (error && error.message) || "Something went wrong",
     stack: process.env.NODE_ENV === "production" ? null : (error && error.stack)
+
   });
+
 };

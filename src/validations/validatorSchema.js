@@ -8,7 +8,7 @@ export const signupSchema = Joi.object({
   // username: Joi.string().alphanum().min(3).max(20).required(),
   email: Joi.string().email().required(),
   password: Joi.string().min(6).required(),
-  confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
+  // confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
   // age: Joi.number().integer().min(18).max(100),
   // phone: Joi.string().pattern(/^[0-9]{10,15}$/),
   // gender: Joi.string().valid('male', 'female', 'other'),
