@@ -51,7 +51,9 @@ export const loginController = async (req, res) => {
       email: existingUser.email,
       verified: existingUser.verified,
 
-    }, 2);
+    }, 
+    "2h"
+  );
 
 
 
@@ -63,13 +65,12 @@ export const loginController = async (req, res) => {
       maxAge: 2 * 60 * 60 * 1000,
       httpOnly: process.env.NODE_ENV === 'production',
       secure: process.env.NODE_ENV === 'production',
-      // path: '/auth'
-       path: '/api/auth'
+      path: '/'
     }
   });
 
 
-  return successResponse(res, 201, { token: jwtToken, }, "login created");
+  return successResponse(res, 201, { token: jwtToken, }, "login success");
 
 };
 
@@ -77,5 +78,5 @@ export const loginController = async (req, res) => {
 
 export const logoutController = (req, res) => {
   clearCookie(res, "Authorization");
-  return successResponse(res, 200, req.cookies, "logged out successfully");
+  return successResponse(res, 200, null, "logged out successfully");
 };

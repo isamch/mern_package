@@ -19,6 +19,7 @@ const app = express(); // create instance app from express function factory
 
 // middleware: parse JSON
 app.use(express.json());
+
 // cookies parser
 app.use(cookieParser());
 

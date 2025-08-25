@@ -9,12 +9,18 @@ const router = express.Router();
 
 
 
-router.get('/register', validate(registerSchema), registerController);
-router.get('/login', validate(loginSchema), loginController);
+router.post('/register', validate(registerSchema), registerController);
+router.post('/login', validate(loginSchema), loginController);
 
-router.get('/logout', authMiddleware, logoutController);
+router.post('/logout', authMiddleware, logoutController);
 
 
+
+router.get('/home', authMiddleware, (req, res) => {
+  return res.json({
+    message: "hello to home"
+  });
+});
 
 
 

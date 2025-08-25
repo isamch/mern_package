@@ -1,4 +1,3 @@
-
 import jwt from "jsonwebtoken";
 
 export const signToken = (payload, expiresIn = "1h") => {
