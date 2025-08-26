@@ -8,6 +8,8 @@ export const authMiddleware = (req, res, next) => {
     return next();
   }
 
+
+
   let token;
 
   if (req.headers.client === "not-browser" && req.headers.authorization) {
@@ -16,6 +18,9 @@ export const authMiddleware = (req, res, next) => {
     token = req.cookies.Authorization;
   }
 
+  // return res.json({
+  //   token: token
+  // });
 
 
   if (!token) {
@@ -28,7 +33,6 @@ export const authMiddleware = (req, res, next) => {
   }
 
   const jwtVerified = verifyToken(token);
-
 
 
   if (!jwtVerified) {

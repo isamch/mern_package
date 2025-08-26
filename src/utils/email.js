@@ -1,19 +1,35 @@
 import nodemailer from "nodemailer";
+import { emailTemplates } from "../templates/emailTemplates.js";
 
+
+ 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT),
+  secure: process.env.SMTP_SECURE === "true",
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
   },
 });
 
 
-export const sendEmail = async (to, subject, html) => {
-  await transporter.sendMail({
-    from: `"${process.env.APP_NAME}" <${process.env.EMAIL_USER}>`,
+
+
+export const sendMail = async ({ to, subject, templateName, templateData }) => {
+
+  if (!emailTemplates[templateName]) {
+    throw new Error("Email template not found");
+  }
+
+  const htmlContent = emailTemplates[templateName](templateData);
+
+  const info = await transporter.sendMail({
+    from: `"My App" <${process.env.SMTP_USER}>`,
     to,
     subject,
-    html,
+    html: htmlContent,
   });
+
+  return info;
 };

@@ -3,6 +3,9 @@ import { signToken } from "./../utils/jwt.js";
 import { successResponse, apiResponse } from './../utils/apiResponse.js'
 import { sendCookies, clearCookie } from '../utils/Cookies.js'
 import { doHash, doHashValidation, hmacHash } from './../utils/hashing.js';
+import { generateOTP } from './../utils/generateOTP.js';
+import { sendMail } from './../utils/email.js';
+
 
 
 
@@ -47,11 +50,12 @@ export const loginController = async (req, res) => {
   // jwt work :
   const jwtToken = signToken(
     {
+      id: existingUser.id,
       name: existingUser.name,
       email: existingUser.email,
       verified: existingUser.verified,
 
-    }, 
+    },
     "2h"
   );
 
@@ -79,4 +83,81 @@ export const loginController = async (req, res) => {
 export const logoutController = (req, res) => {
   clearCookie(res, "Authorization");
   return successResponse(res, 200, null, "logged out successfully");
+};
+
+
+
+
+// email verify :
+
+export const sendCodeVerifyEmail = async (req, res) => {
+
+  const existingUser = await User.findById(req.user.id);
+
+  if (!existingUser) {
+    throw { statusCode: 404, message: "User not found" };
+  }
+
+  if (existingUser.verified) {
+    return apiResponse(res, "success", "Email already verified", { email: existingUser.email }, 200);
+  }
+
+  const code = generateOTP(6);
+
+  existingUser.verificationCode = code;
+  existingUser.verificationCodeValidationTime = Date.now() + 10 * 60 * 1000;
+  await existingUser.save();
+
+
+  successResponse(res, 200, { email: existingUser.email }, "Verification code saved, email will be sent shortly");
+
+  const info = await sendMail({
+    to: existingUser.email,
+    subject: "Verify your email",
+    templateName: "verification",
+    templateData: { name: existingUser.name, code }
+  });
+
+  if (!info.accepted.includes(existingUser.email)) {
+    throw { statusCode: 500, message: "Failed to send verification email" };
+  }
+
+};
+
+
+
+
+export const VerifyCodeEmail = async (req, res) => {
+  const { code } = req.body;
+
+  const existingUser = await User.findById(req.user.id).select("+verificationCode +verificationCodeValidationTime");;
+
+
+  if (!existingUser) {
+    throw { statusCode: 404, message: "User not found" };
+  }
+
+  if (existingUser.verified) {
+    return apiResponse(res, "success", "Email already verified", { email: existingUser.email }, 200);
+  }
+
+  if (!existingUser.verificationCode || !existingUser.verificationCodeValidationTime) {
+    throw { statusCode: 400, message: "Verification code not generated" };
+  }
+
+  if (Date.now() > existingUser.verificationCodeValidationTime) {
+    throw { statusCode: 400, message: "Verification code expired" };
+  }
+
+  if (existingUser.verificationCode !== code.toString()) {
+    throw { statusCode: 400, message: "Invalid verification code" };
+  }
+
+  existingUser.verified = true;
+  existingUser.verificationCode = null;
+  existingUser.verificationCodeValidationTime = null;
+  await existingUser.save();
+
+  return successResponse(res, 200, { email: existingUser.email }, "Email verified successfully");
+
 };
