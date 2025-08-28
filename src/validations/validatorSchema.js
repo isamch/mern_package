@@ -5,6 +5,18 @@ import Joi from "joi";
  */
 export const registerSchema = Joi.object({
   name: Joi.string().min(3).max(30).required(),
+  // name: Joi.string()
+  //   .min(3)
+  //   .max(30)
+  //   .required()
+  //   .messages({
+  //     "string.base": "Name must be a string",
+  //     "string.empty": "Name cannot be empty",
+  //     "string.min": "Name should have at least 3 characters",
+  //     "string.max": "Name should have at most 30 characters",
+  //     "any.required": "Name is required"
+  //   }),
+    
   // username: Joi.string().alphanum().min(3).max(20).required(),
   email: Joi.string().email().required(),
   password: Joi.string().min(6).required(),
@@ -46,6 +58,7 @@ export const updateProfileSchema = Joi.object({
   name: Joi.string().min(3).max(30),
   username: Joi.string().alphanum().min(3).max(20),
   email: Joi.string().email(),
+  password: Joi.string().min(6),
   age: Joi.number().integer().min(18).max(100),
   phone: Joi.string().pattern(/^[0-9]{10,15}$/),
   gender: Joi.string().valid('male', 'female', 'other'),

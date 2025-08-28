@@ -2,9 +2,14 @@
 export const validate = (schema) => {
 
   return (req, res, next) => {
+    
+    if (!req.body || Object.keys(req.body).length === 0) {
+      throw { message: "Request body is required", statusCode: 400 };
+    }
 
     const { error } = schema.validate(req.body, { abortEarly: false });   // { abortEarly: false }); : stp in first error
-    
+
+
     if (error) {
       const messages = {};
 

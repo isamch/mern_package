@@ -2,7 +2,8 @@ import express from 'express';
 
 // import routes :
 import router from './src/routes/router.js';
-import authRouter from './src/routes/authRouter.js';
+import authRouter from './src/routes/api/authRouter.js';
+import userRouter from './src/routes/api/userRouter.js';
 
 // import db:
 import connectDB from './src/config/db.js';
@@ -10,8 +11,8 @@ import connectDB from './src/config/db.js';
 // import middlewares:
 import errorHandler from './src/middleware/errorHandler.js';
 
+// others :
 import cookieParser from "cookie-parser";
-
 
 
 
@@ -28,8 +29,9 @@ app.use(cookieParser());
 await connectDB();
 
 // router :
-app.use('/api/test', router);
 app.use('/api/auth', authRouter);
+app.use('/api/users', userRouter);
+
 
 
 // finales middlewares:

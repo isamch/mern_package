@@ -2,7 +2,7 @@ import User from "./../models/User.js";
 import { signToken } from "./../utils/jwt.js";
 import { successResponse, apiResponse } from './../utils/apiResponse.js'
 import { sendCookies, clearCookie } from '../utils/Cookies.js'
-import { doHash, doHashValidation, hmacHash } from './../utils/hashing.js';
+import { doHash, doHashValidation } from './../utils/hashing.js';
 import { generateOTP } from './../utils/generateOTP.js';
 import { sendMail } from './../utils/email.js';
 
