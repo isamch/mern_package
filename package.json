@@ -4,7 +4,14 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+
+    "make:controller": "node src/console/index.js make:controller",
+    "make:model": "node src/console/index.js make:model",
+    "make:route": "node src/console/index.js make:route",
+    "make:middleware": "node src/console/index.js make:middleware",
+    "make:factory": "node src/console/index.js make:factory"
+  
   },
   "keywords": [],
   "author": "",
