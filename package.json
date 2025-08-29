@@ -1,19 +1,27 @@
 {
   "name": "icmern",
-  "version": "1.0.1",
+  "version": "1.0.6",
   "description": "MERN starter template",
   "main": "server.js",
   "bin": {
     "icmern": "./src/console/index.js"
   },
+  "files": [
+    "server.js",
+    "app.js",
+    "src/",
+    "package.json",
+    ".env.example",
+    "README.md"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js",
-    "make:controller": "pratique make:controller",
-    "make:model": "pratique make:model",
-    "make:route": "pratique make:route",
-    "make:middleware": "pratique make:middleware",
-    "make:factory": "pratique make:factory"
+    "make:controller": "icmern make:controller",
+    "make:model": "icmern make:model",
+    "make:route": "icmern make:route",
+    "make:middleware": "icmern make:middleware",
+    "make:factory": "icmern make:factory"
   },
   "keywords": [],
   "author": "Isam Chajia",
@@ -23,7 +31,6 @@
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "crypto": "^1.0.1",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "faker": "^6.6.6",
