@@ -1,3 +1,4 @@
+
 // 1. Controller Methods (RESTful)
 
 // فـ REST API، كنلتازمو بنفس الأسماء باش يكون الكود منظم وسهل الفهم:
@@ -142,4 +143,3 @@ export const destroy = async (req, res) => {
 
   return successResponse(res, 200, null, "User deleted successfully");
 };
-

@@ -2,18 +2,21 @@
   "name": "icmern",
   "version": "1.0.0",
   "description": "MERN starter template",
-  "main": "index.js",
+  "main": "server.js",
+  "bin": {
+    "pratique": "./src/console/index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js",
-    "make:controller": "node src/console/index.js make:controller",
-    "make:model": "node src/console/index.js make:model",
-    "make:route": "node src/console/index.js make:route",
-    "make:middleware": "node src/console/index.js make:middleware",
-    "make:factory": "node src/console/index.js make:factory"
+    "make:controller": "pratique make:controller",
+    "make:model": "pratique make:model",
+    "make:route": "pratique make:route",
+    "make:middleware": "pratique make:middleware",
+    "make:factory": "pratique make:factory"
   },
   "keywords": [],
-  "author": "",
+  "author": "Isam Chajia",
   "license": "ISC",
   "type": "module",
   "dependencies": {
