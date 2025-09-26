@@ -1,6 +1,6 @@
 {
   "name": "icmern",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "MERN starter template",
   "main": "server.js",
   "bin": {
