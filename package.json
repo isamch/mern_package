@@ -10,7 +10,6 @@
     "server.js",
     "app.js",
     "src/",
-    "view/",
     "package.json",
     ".env.example",
     "README.md"
