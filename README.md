@@ -76,6 +76,7 @@ src/
   controllers/
     authController.js    # register/login/logout, email verification
     userController.js    # CRUD for users (secured)
+    homeController.js    # Web pages (EJS) controllers: home/about
   middleware/
     authMiddleware.js    # Checks Authorization (JWT from header/cookie)
     errorHandler.js      # Central error handler
@@ -89,7 +90,7 @@ src/
       userRouter.js      # /api/users/* endpoints
     router.js            # example root router (welcome)
     web/
-      index.js           # web router rendering EJS views
+      index.js           # web router rendering EJS views (/, /about)
   templates/
     emailTemplates.js    # Nodemailer HTML templates
   utils/
@@ -99,9 +100,12 @@ src/
     generateOTP.js       # numeric OTP generator
     hashing.js           # bcrypt password hashing
     jwt.js               # sign/verify JWT
-    pagination.js        # pagination helper
-view/
-  index.ejs              # sample EJS page rendered at '/'
+    pagination.js        # pagination helper (API)
+    viewHelpers.js       # helpers for EJS views (formatDate, truncate, ...)
+view/                    # place your .ejs templates here (create as needed)
+  pages/                 # suggested location for page templates
+    index.ejs            # homepage (rendered at /)
+    about.ejs            # about page (rendered at /about)
 ```
 
 ## API Overview
@@ -146,16 +150,73 @@ app.set('view engine', 'ejs');
 app.set('views', 'view'); // use the 'view/' directory
 ```
 
-- Web router at `src/routes/web/index.js` renders `view/index.ejs`:
+- Web router at `src/routes/web/index.js`:
+  - `/` → `homeController.home` → `res.render('pages/index', { ... })`
+  - `/about` → `homeController.about` → `res.render('pages/about', { ... })`
 
-```js
-router.get('/', (req, res) => {
-	return res.render('index', { title: 'Home', message: 'Welcome to EJS Home' });
-});
+### Create your first page
+
+1) Create a file `view/pages/index.ejs`:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title><%= title %></title>
+</head>
+<body>
+	<h1><%= message %></h1>
+</body>
+</html>
 ```
 
-- Render nested templates by placing files under `view/` and calling `res.render('folder/name', data)`.
-- You can use partials with EJS includes: `<%- include('partials/header') %>`.
+2) In `src/controllers/homeController.js`:
+
+```js
+export const home = (req, res) => {
+	return res.render('pages/index', { title: 'Home', message: 'Welcome to EJS Home' });
+};
+```
+
+## View Helpers (EJS)
+
+Utilities you can use inside your EJS templates (import and pass to views or attach to `res.locals` in middleware):
+
+- `formatDate(date)` → تنسيق التاريخ بالعربية (`ar-MA`)
+- `truncate(text, length=50)` → اختصار نص طويل وإضافة `...`
+- `stripTags(html)` → إزالة جميع وسوم HTML
+- `asset(path)` → توليد رابط أصل مع نسخة كاش بسيطة `?v=...`
+- `isActive(currentPath, linkPath)` → إرجاع `active` إذا تطابق المسار
+- `paginate(currentPage, totalPages)` → يبني روابط صفحات بسيطة (HTML)
+- `humanFileSize(size)` → تحويل حجم البايت إلى (B/KB/MB/GB)
+- `breadcrumb(paths)` → إنشاء مسار روابط من مصفوفة `{url,label}`
+
+Example usage in EJS (assuming helpers available in locals as `h`):
+
+```html
+<nav>
+	<a href="/" class="<%= h.isActive(path, '/') %>">Home</a>
+	<a href="/about" class="<%= h.isActive(path, '/about') %>">About</a>
+</nav>
+<p><small><%= h.formatDate(Date.now()) %></small></p>
+<p><%= h.truncate(longText, 120) %></p>
+<div>
+	<%- h.paginate(currentPage, totalPages) %>
+</div>
+```
+
+You can expose helpers to all views via middleware in `app.js`:
+
+```js
+import * as h from './src/utils/viewHelpers.js';
+app.use((req, res, next) => {
+	res.locals.h = h;
+	res.locals.path = req.path; // useful for isActive
+	return next();
+});
+```
 
 ## Authentication Flow
 
