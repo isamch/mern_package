@@ -1,9 +1,11 @@
 import express from 'express';
 
+// controllers :
+import { home, about } from '../../controllers/homeController.js';
+
 const router = express.Router();
 
-router.get('/', (req, res) => {
-	return res.render('pages/index', { title: 'Home', message: 'Welcome to EJS Home' });
-});
+router.get('/', home);
+router.get('/about', about);
 
 export default router; 
