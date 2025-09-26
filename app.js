@@ -36,7 +36,7 @@ app.use(helmet());
 
 // Configure EJS view engine
 app.set('view engine', 'ejs');
-app.set('views', 'view');
+app.set('views', './src/view');
 
 
 // connect db
