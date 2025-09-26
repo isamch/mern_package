@@ -184,14 +184,14 @@ export const home = (req, res) => {
 
 Utilities you can use inside your EJS templates (import and pass to views or attach to `res.locals` in middleware):
 
-- `formatDate(date)` → تنسيق التاريخ بالعربية (`ar-MA`)
-- `truncate(text, length=50)` → اختصار نص طويل وإضافة `...`
-- `stripTags(html)` → إزالة جميع وسوم HTML
-- `asset(path)` → توليد رابط أصل مع نسخة كاش بسيطة `?v=...`
-- `isActive(currentPath, linkPath)` → إرجاع `active` إذا تطابق المسار
-- `paginate(currentPage, totalPages)` → يبني روابط صفحات بسيطة (HTML)
-- `humanFileSize(size)` → تحويل حجم البايت إلى (B/KB/MB/GB)
-- `breadcrumb(paths)` → إنشاء مسار روابط من مصفوفة `{url,label}`
+- `formatDate(date)` → Format date in English (`en-US`)
+- `truncate(text, length=50)` → Truncate long text and add `...`
+- `stripTags(html)` → Remove all HTML tags
+- `asset(path)` → Generate asset URL with simple cache busting `?v=...`
+- `isActive(currentPath, linkPath)` → Return `active` if the path matches
+- `paginate(currentPage, totalPages)` → Build simple pagination links (HTML)
+- `humanFileSize(size)` → Convert bytes to B/KB/MB/GB
+- `breadcrumb(paths)` → Create breadcrumb from an array `{url,label}`
 
 Example usage in EJS (assuming helpers available in locals as `h`):
 
