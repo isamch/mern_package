@@ -4,6 +4,8 @@ import express from 'express';
 import router from './src/routes/router.js';
 import authRouter from './src/routes/api/authRouter.js';
 import userRouter from './src/routes/api/userRouter.js';
+import webRouter from './src/routes/web/index.js';
+
 
 // import db:
 import connectDB from './src/config/db.js';
@@ -32,12 +34,22 @@ app.use(cors());
 app.use(helmet());
 
 
+// Configure EJS view engine
+app.set('view engine', 'ejs');
+app.set('views', 'view');
+
+
 // connect db
 await connectDB();
+
 
 // router :
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
+
+
+// mount web router (EJS views)
+app.use('/', webRouter);
 
 
 
