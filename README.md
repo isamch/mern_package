@@ -15,6 +15,7 @@ A production-ready MERN starter template with batteries included: authentication
 - Developer CLI:
   - `init` to scaffold a fresh project from this template
   - `make:controller`, `make:model`, `make:route`, `make:middleware`, `make:factory`
+- EJS view engine for server-rendered pages (configurable `view/` directory)
 
 ## Quick Start
 
@@ -79,6 +80,7 @@ src/
     authMiddleware.js    # Checks Authorization (JWT from header/cookie)
     errorHandler.js      # Central error handler
     validatorMiddleware.js # Joi schema validation
+    uploadMiddleware.js  # (placeholder)
   models/
     User.js              # User schema with verification fields
   routes/
@@ -86,6 +88,8 @@ src/
       authRouter.js      # /api/auth/* endpoints
       userRouter.js      # /api/users/* endpoints
     router.js            # example root router (welcome)
+    web/
+      index.js           # web router rendering EJS views
   templates/
     emailTemplates.js    # Nodemailer HTML templates
   utils/
@@ -95,6 +99,9 @@ src/
     generateOTP.js       # numeric OTP generator
     hashing.js           # bcrypt password hashing
     jwt.js               # sign/verify JWT
+    pagination.js        # pagination helper
+view/
+  index.ejs              # sample EJS page rendered at '/'
 ```
 
 ## API Overview
@@ -129,6 +136,26 @@ Base URL: `/api`
 - `POST /api/users` → Create user (validated like register)
 - `PUT /api/users/:id` → Update user
 - `DELETE /api/users/:id` → Delete user
+
+## Views (EJS)
+
+EJS is configured in `app.js`:
+
+```js
+app.set('view engine', 'ejs');
+app.set('views', 'view'); // use the 'view/' directory
+```
+
+- Web router at `src/routes/web/index.js` renders `view/index.ejs`:
+
+```js
+router.get('/', (req, res) => {
+	return res.render('index', { title: 'Home', message: 'Welcome to EJS Home' });
+});
+```
+
+- Render nested templates by placing files under `view/` and calling `res.render('folder/name', data)`.
+- You can use partials with EJS includes: `<%- include('partials/header') %>`.
 
 ## Authentication Flow
 
@@ -213,6 +240,20 @@ The generators create files in `src/` with sensible naming conventions and place
 
 - This template assumes ESM (`"type": "module"`)
 - Requires Node.js 18+
+
+## Publish to npm
+
+1. Bump the version (choose one):
+   - Patch: `npm version patch`
+   - Minor: `npm version minor`
+   - Major: `npm version major`
+2. Ensure `files` in `package.json` includes all directories you want to publish (e.g. `src/`, `view/`, `server.js`, `app.js`).
+3. Test tarball locally:
+   - `npm pack`
+   - Install in another project: `npm i ../path/to/icmern-<version>.tgz`
+4. Login and publish:
+   - `npm login`
+   - `npm publish` (or `npm publish --access public` for first-time public scoped packages)
 
 ## License
 
