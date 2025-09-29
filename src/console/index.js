@@ -162,9 +162,6 @@ switch (command) {
     // نسخ كل شيء من جذر الحزمة إلى الهدف مع الاستثناءات
     copyRecursive(packageRoot, targetDir, packageRoot);
 
-    // إزالة ملفات CLI من المشروع الناتج
-    removeIfExists(path.join(targetDir, "src", "console"));
-
     // كتابة package.json بسيط للمشروع الجديد
     const appPackage = {
       name: targetName,
@@ -183,6 +180,7 @@ switch (command) {
         cors: "^2.8.5",
         dotenv: "^17.2.1",
         express: "^5.1.0",
+        ejs: "^3.1.10",
         faker: "^6.6.6",
         helmet: "^8.1.0",
         joi: "^18.0.1",
@@ -199,6 +197,72 @@ switch (command) {
       path.join(targetDir, "package.json"),
       JSON.stringify(appPackage, null, 2)
     );
+
+    // اكتب سكربت كونسول مصغر داخل المشروع الناتج
+    const minimalConsole = '#!/usr/bin/env node\n'
+      + 'import fs from "fs";\n'
+      + 'import path from "path";\n'
+      + 'import { fileURLToPath } from "url";\n\n'
+      + 'const __filename = fileURLToPath(import.meta.url);\n'
+      + 'const __dirname = path.dirname(__filename);\n\n'
+      + 'const templatesDir = path.join(__dirname, "templates");\n\n'
+      + 'const args = process.argv.slice(2);\n'
+      + 'const command = args[0];\n'
+      + 'const name = args[1];\n\n'
+      + 'const generateFile = (type, name, subfolder = "") => {\n'
+      + '  const templatePath = path.join(templatesDir, type + ".js");\n'
+      + '  if (!fs.existsSync(templatePath)) {\n'
+      + '    console.log("❌ Template for " + type + " not found.");\n'
+      + '    process.exit(1);\n'
+      + '  }\n'
+      + '  let content = fs.readFileSync(templatePath, "utf-8");\n'
+      + '  content = content.replace(/__NAME__/g, name);\n'
+      + '  const destDir = path.join(process.cwd(), "src", subfolder);\n'
+      + '  if (!fs.existsSync(destDir)) fs.mkdirSync(destDir, { recursive: true });\n'
+      + '  let fileName;\n'
+      + '  switch (type) {\n'
+      + '    case "controller": fileName = name[0].toUpperCase() + name.slice(1) + "Controller.js"; break;\n'
+      + '    case "model": fileName = name[0].toUpperCase() + name.slice(1) + ".js"; break;\n'
+      + '    case "route": fileName = name[0].toUpperCase() + name.slice(1) + "Routes.js"; break;\n'
+      + '    case "middleware": fileName = name[0].toUpperCase() + name.slice(1) + ".js"; break;\n'
+      + '    case "factory": fileName = name[0].toUpperCase() + name.slice(1) + "Factory.js"; break;\n'
+      + '    default: fileName = name + ".js";\n'
+      + '  }\n'
+      + '  const destPath = path.join(destDir, fileName);\n'
+      + '  fs.writeFileSync(destPath, content);\n'
+      + '  console.log("✅ " + type + " created: " + destPath);\n'
+      + '};\n\n'
+      + 'switch (command) {\n'
+      + '  case "make:controller": {\n'
+      + '    if (!name) { console.log("❌ Usage: icmern make:controller <Name>"); process.exit(1); }\n'
+      + '    generateFile("controller", name, "controllers");\n'
+      + '    break;\n'
+      + '  }\n'
+      + '  case "make:model": {\n'
+      + '    if (!name) { console.log("❌ Usage: icmern make:model <Name>"); process.exit(1); }\n'
+      + '    generateFile("model", name, "models");\n'
+      + '    break;\n'
+      + '  }\n'
+      + '  case "make:route": {\n'
+      + '    if (!name) { console.log("❌ Usage: icmern make:route <Name>"); process.exit(1); }\n'
+      + '    generateFile("route", name, "routes/api");\n'
+      + '    break;\n'
+      + '  }\n'
+      + '  case "make:middleware": {\n'
+      + '    if (!name) { console.log("❌ Usage: icmern make:middleware <Name>"); process.exit(1); }\n'
+      + '    generateFile("middleware", name, "middleware");\n'
+      + '    break;\n'
+      + '  }\n'
+      + '  case "make:factory": {\n'
+      + '    if (!name) { console.log("❌ Usage: icmern make:factory <Name>"); process.exit(1); }\n'
+      + '    generateFile("factory", name, "factories");\n'
+      + '    break;\n'
+      + '  }\n'
+      + '  default:\n'
+      + '    console.log("❌ Unknown command");\n'
+      + '}\n';    const consoleDir = path.join(targetDir, "src", "console");
+    if (!fs.existsSync(consoleDir)) fs.mkdirSync(consoleDir, { recursive: true });
+    fs.writeFileSync(path.join(consoleDir, "index.js"), minimalConsole);
 
     console.log(`✅ Project initialized at ${targetDir}`);
     console.log("Next steps:\n  1) cd", targetName, "\n  2) npm install\n  3) npm run dev");
