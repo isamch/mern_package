@@ -5,6 +5,8 @@ import chalk    from 'chalk'
 import ora      from 'ora'
 import { execSync } from 'child_process'
 import { scaffoldProject } from '../lib/scaffold.js'
+import fs from 'fs'
+import path from 'path'
 
 console.log(chalk.cyan(`
 ╔═══════════════════════════════════════════╗
@@ -42,9 +44,22 @@ try {
   await scaffoldProject(answers)
   spinner.succeed(chalk.green('Project scaffolded!\n'))
 
-  const installSpinner = ora('Installing dependencies...').start()
-  execSync('npm install', { cwd: `${process.cwd()}/${answers.name}`, stdio: 'ignore' })
-  installSpinner.succeed(chalk.green('Dependencies installed!\n'))
+  // نسخ مجلد .github إذا كان موجودًا
+  const githubSrc = path.join(__dirname, '../.github');
+  const githubDest = path.join(process.cwd(), answers.name, '.github');
+  if (fs.existsSync(githubSrc)) {
+    fs.cpSync(githubSrc, githubDest, { recursive: true });
+  }
+  // نسخ مجلد logs إذا كان موجودًا
+  const logsSrc = path.join(__dirname, '../logs');
+  const logsDest = path.join(process.cwd(), answers.name, 'logs');
+  if (fs.existsSync(logsSrc)) {
+    fs.cpSync(logsSrc, logsDest, { recursive: true });
+  }
+
+  // const installSpinner = ora('Installing dependencies...').start()
+  // execSync('npm install', { cwd: `${process.cwd()}/${answers.name}`, stdio: 'ignore' })
+  // installSpinner.succeed(chalk.green('Dependencies installed!\n'))
 
   console.log(chalk.bold('Get started:'))
   console.log(chalk.cyan(`  cd ${answers.name}`))
