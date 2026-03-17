@@ -67,6 +67,7 @@ try {
 
   console.log(chalk.bold('Get started:'))
   console.log(chalk.cyan(`  cd ${answers.name}`))
+  console.log(chalk.cyan('  npm install'))
   console.log(chalk.cyan('  cp .env.example .env'))
   console.log(chalk.cyan('  npm run seed:roles'))
   console.log(chalk.cyan('  npm run dev\n'))
