@@ -1,6 +1,6 @@
 {
   "name": "icmern",
-  "version": "4.0.4",
+  "version": "4.0.5",
   "description": "⚡ Production-ready Express starter — MongoDB, Joi, JWT, RBAC, CLI generator",
   "main": "server.js",
   "type": "module",
