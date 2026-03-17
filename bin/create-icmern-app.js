@@ -7,6 +7,10 @@ import { execSync } from 'child_process'
 import { scaffoldProject } from '../lib/scaffold.js'
 import fs from 'fs'
 import path from 'path'
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 console.log(chalk.cyan(`
 ╔═══════════════════════════════════════════╗
@@ -51,7 +55,7 @@ try {
     fs.cpSync(githubSrc, githubDest, { recursive: true });
   }
   // نسخ مجلد logs إذا كان موجودًا
-  const logsSrc = path.join(__dirname, '../logs');
+  const logsSrc = path.join(__dirname, '../.logs');
   const logsDest = path.join(process.cwd(), answers.name, 'logs');
   if (fs.existsSync(logsSrc)) {
     fs.cpSync(logsSrc, logsDest, { recursive: true });
