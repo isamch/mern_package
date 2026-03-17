@@ -1,4 +1,7 @@
 import winston from 'winston'
+import fs from 'fs'
+
+fs.mkdirSync('logs', { recursive: true })
 
 const { combine, timestamp, errors, colorize, printf, json } = winston.format
 
